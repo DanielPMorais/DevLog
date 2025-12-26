@@ -41,11 +41,19 @@ CREATE TABLE IF NOT EXISTS logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER,
     type TEXT, -- 'error', 'update', 'feature'
+    title TEXT,
     description TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (project_id) REFERENCES projects(id)
   );
 `);
+
+// Adiciona coluna title se não existir (para bancos existentes)
+try {
+  db.exec('ALTER TABLE logs ADD COLUMN title TEXT');
+} catch (e) {
+  // Coluna já existe, ignorar
+}
 
 app.get('/projects', (req, res) => {
     const stmt = db.prepare('SELECT * FROM projects');
@@ -65,9 +73,12 @@ app.get('/projects/:id/logs', (req, res) => {
 });
 
 app.post('/logs', (req, res) => {
-    const { project_id, type, description } = req.body;
-    const stmt = db.prepare('INSERT INTO logs (project_id, type, description) VALUES (?, ?, ?)');
-    stmt.run(project_id, type, description);
+    const { project_id, type, title, description } = req.body;
+    const stmt = db.prepare(`
+      INSERT INTO logs (project_id, type, title, description, created_at) 
+      VALUES (?, ?, ?, ?, datetime('now', 'localtime'))
+    `);
+    stmt.run(project_id, type, title || null, description);
     res.json({ success: true });
 });
 
@@ -88,10 +99,10 @@ app.delete('/projects/:id', (req, res) => {
 
 // Rotas de logs
 app.put('/logs/:id', (req, res) => {
-  const { type, description } = req.body;
+  const { type, title, description } = req.body;
   const { id } = req.params;
-  const stmt = db.prepare('UPDATE logs SET type = ?, description = ? WHERE id = ?');
-  stmt.run(type, description, id);
+  const stmt = db.prepare('UPDATE logs SET type = ?, title = ?, description = ? WHERE id = ?');
+  stmt.run(type, title || null, description, id);
   res.json({ success: true });
 });
 

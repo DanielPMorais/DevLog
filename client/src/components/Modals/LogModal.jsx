@@ -32,13 +32,21 @@ export default function LogModal({ isOpen, isEditing, log, onClose, onSave, onCh
               </button>
             ))}
           </div>
+
+          <input
+            type="text"
+            placeholder="Título do evento (opcional)"
+            className="bg-[#111111] border border-gray-700 p-3 rounded text-white focus:border-blue-500 outline-none"
+            value={log.title || ''}
+            onChange={(e) => onChange({ ...log, title: e.target.value })}
+            autoFocus
+          />
           
           <textarea
             placeholder="O que aconteceu? (Aceita quebra de linha)"
             className="bg-[#111111] border border-gray-700 p-3 rounded text-white focus:border-blue-500 outline-none h-32 resize-none"
             value={log.description}
             onChange={(e) => onChange({ ...log, description: e.target.value })}
-            autoFocus
           />
           
           <div className="flex justify-end gap-2 mt-2">

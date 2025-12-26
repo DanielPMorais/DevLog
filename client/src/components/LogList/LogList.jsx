@@ -33,6 +33,11 @@ export default function LogList({ logs, onAddLog, onEditLog, onDeleteLog }) {
             </span>
 
             <div className="flex-1 min-w-0">
+              {log.title && (
+                <div className="text-white font-bold mb-1">
+                  {log.title}
+                </div>
+              )}
               <div className="text-gray-300 whitespace-pre-wrap">
                 {log.description}
               </div>
