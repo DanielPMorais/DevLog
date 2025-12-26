@@ -23,6 +23,18 @@ services:
     container_name: devlog-web
     restart: always
     ports:
-      - "80:80" # Acessa direto no localhost (sem porta) ou troque para 3000:80
+      - "3000:80" # Acessa direto no localhost (sem porta) ou troque para 3000:80
     depends_on:
       - api
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: web 
+  port_map: "3000"
+  author: Daniel
+  category: self-hosted
+  icon: "https://cdn-icons-png.flaticon.com/128/10023/10023242.png"
+  title:
+    en_us: "Meu DevLog"

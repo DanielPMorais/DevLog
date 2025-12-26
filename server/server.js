@@ -22,9 +22,11 @@ const db = new DataBase(DB_PATH);
 
 // Middlewares
 app.use(cors({
-  origin: CORS_ORIGIN.split(',').map(url => url.trim()),
-  credentials: true
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 
 db.exec(`
@@ -99,7 +101,7 @@ app.delete('/logs/:id', (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server rodando na porta ${PORT}`);
   console.log(`📁 Banco de dados: ${DB_PATH}`);
   console.log(`🌐 CORS habilitado para: ${CORS_ORIGIN}`);
