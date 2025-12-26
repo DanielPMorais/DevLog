@@ -9,6 +9,7 @@ node_modules/
 # Banco de dados
 *.db
 data/
+devlog.db
 
 # Logs
 logs/
