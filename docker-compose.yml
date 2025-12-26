@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Container do Backend (API)
+  api:
+    build: ./server
+    container_name: devlog-api
+    restart: always
+    ports:
+      - "3003:3003"
+    volumes:
+      # Mapeia o arquivo do banco para uma pasta local 'data'
+      - ./data:/app/data
+    environment:
+      - PORT=3003
+      - NODE_ENV=production
+      - DB_PATH=./data/devlog.db
+      - CORS_ORIGIN=http://10.0.0.126,http://localhost
+
+  # Container do Frontend (Interface)
+  web:
+    build: ./client
+    container_name: devlog-web
+    restart: always
+    ports:
+      - "80:80" # Acessa direto no localhost (sem porta) ou troque para 3000:80
+    depends_on:
+      - api
